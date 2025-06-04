@@ -878,9 +878,9 @@ if __name__ == "__main__":
     print("Bot is running...")
     import threading
     if os.getenv("PORT"):
-        # Start the health server in a background thread
-        threading.Thread(target=run_health_server, daemon=True).start()
-        # Run the bot in the main thread
-        bot.run()
+        # Start the bot in a background thread
+        threading.Thread(target=bot.run, daemon=True).start()
+        # Run the health server in the main thread (so Render detects the port)
+        run_health_server()
     else:
         bot.run()
