@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 CONFIG = {
     'API_ID': int(os.getenv('API_ID', '25753873')),
     'API_HASH': os.getenv('API_HASH', '3a5cdc2079cd76af80586102bd9761e2'),
-    'BOT_TOKEN': os.getenv('TELEGRAM_BOT_TOKEN', '7784648254:AAFh1CT36EdkD9c7G_15duF4RDo9D1h_gr8'),
+    'BOT_TOKEN': os.getenv('TELEGRAM_BOT_TOKEN', '7887824561:AAGmmuNMcD_H4JtRYUj3tuMQ34qJ0sn_9AE'),
     'ADMIN_IDS': [int(id.strip()) for id in os.getenv('ADMIN_IDS', '5962658076').split(',')],
     'MONGO_URI': os.getenv('MONGO_URI', 'mongodb+srv://anonymousguywas:12345Trials@cluster0.t4nmrtp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),
     'BASE_URL': 'https://api.mail.tm',
