@@ -875,12 +875,13 @@ def run_health_server():
     web.run_app(app, host="0.0.0.0", port=port)
 
 if __name__ == "__main__":
-    print("Bot is running...")
-    import threading
-    if os.getenv("PORT"):
-        # Start the bot in a background thread
-        threading.Thread(target=bot.run, daemon=True).start()
-        # Run the health server in the main thread (so Render detects the port)
-        run_health_server()
-    else:
-        bot.run()
+    print("Bot is running with webhook...")
+    port = int(os.getenv("PORT", 10000))
+    webhook_url = os.getenv("WEBHOOK_URL")  # Set this in your Render environment variables
+
+    bot.run(
+        webhook=True,
+        webhook_host="0.0.0.0",
+        webhook_port=port,
+        webhook_url=webhook_url
+    )
