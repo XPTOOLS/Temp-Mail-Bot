@@ -5,3 +5,4 @@ python-dotenv
 requests
 pillow
 beautifulsoup4
+aiohttp
