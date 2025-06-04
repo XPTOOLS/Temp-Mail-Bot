@@ -876,8 +876,6 @@ def run_health_server():
 
 if __name__ == "__main__":
     print("Bot is running...")
-    # Optionally run a health check server in a background task for Render
-    if os.getenv('RENDER'):
-        import threading
-        threading.Thread(target=run_health_server, daemon=True).start()
+    import threading
+    threading.Thread(target=run_health_server, daemon=True).start()
     bot.run()
