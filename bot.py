@@ -877,5 +877,9 @@ def run_health_server():
 if __name__ == "__main__":
     print("Bot is running...")
     import threading
-    threading.Thread(target=run_health_server, daemon=True).start()
-    bot.run()
+    if os.getenv("PORT"):
+        bot_thread = threading.Thread(target=bot.run, daemon=True)
+        bot_thread.start()
+        run_health_server()
+    else:
+        bot.run()
