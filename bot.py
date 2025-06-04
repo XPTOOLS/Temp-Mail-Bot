@@ -878,8 +878,9 @@ if __name__ == "__main__":
     print("Bot is running...")
     import threading
     if os.getenv("PORT"):
-        bot_thread = threading.Thread(target=bot.run, daemon=True)
-        bot_thread.start()
-        run_health_server()
+        # Start the health server in a background thread
+        threading.Thread(target=run_health_server, daemon=True).start()
+        # Run the bot in the main thread
+        bot.run()
     else:
         bot.run()
