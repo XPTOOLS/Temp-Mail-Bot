@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 import io
 import logging
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter
+from aiohttp import web  # <-- Add this import
 
 # Load environment variables from .env
 load_dotenv()
@@ -860,5 +861,46 @@ async def handle_close_message(client, callback_query: CallbackQuery):
 
 # ------------------------ Start Bot ------------------------
 
-print("Bot is running...")
-bot.run()
+# --- Webhook Configuration ---
+PORT = int(os.getenv('PORT', 10000))
+WEBHOOK_PATH = "/webhook"
+WEBHOOK_SECRET = os.getenv('WEBHOOK_SECRET', '')
+WEBHOOK_URL = os.getenv('WEBHOOK_URL', '') + WEBHOOK_PATH
+
+async def health_check(request):
+    """Health check endpoint"""
+    return web.Response(text="OK")
+
+async def telegram_webhook(request):
+    """Handle incoming webhook requests for Pyrogram"""
+    try:
+        data = await request.json()
+        # Pyrogram does not natively support aiohttp webhooks, so we simulate polling by calling .process_new_updates
+        # You may need to adapt this if using a different Pyrogram version or structure
+        await bot.process_new_updates([data])
+        return web.Response(text="OK")
+    except Exception as e:
+        logger.error(f"Webhook error: {e}", exc_info=True)
+        return web.Response(status=500, text="Webhook error")
+
+def run_with_webhook():
+    """Run the bot with aiohttp webhook server"""
+    app = web.Application()
+    app.router.add_get("/", health_check)
+    app.router.add_get("/health", health_check)
+    app.router.add_post(WEBHOOK_PATH, telegram_webhook)
+
+    # Set webhook for Telegram
+    asyncio.get_event_loop().run_until_complete(
+        bot.set_webhook(url=WEBHOOK_URL)
+    )
+    print(f"Webhook set to {WEBHOOK_URL}")
+
+    web.run_app(app, host="0.0.0.0", port=PORT)
+
+if __name__ == "__main__":
+    print("Bot is running...")
+    if os.getenv('RENDER'):
+        run_with_webhook()
+    else:
+        bot.run()
